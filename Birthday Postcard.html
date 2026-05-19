@@ -260,6 +260,33 @@
     border-radius: 50% / 70%;
   }
 
+  /* Small subtitle below the cake — names the cake variety */
+  .cake-label {
+    position: absolute;
+    left: 50%;
+    bottom: -28px;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: "DM Mono", monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 5;
+  }
+  .cake-label-tick {
+    color: var(--pink-deep);
+    opacity: 0.6;
+  }
+  .cake-label-text {
+    color: var(--ink-soft);
+    opacity: 0.78;
+  }
+
   .tier {
     position: absolute;
     left: 50%;
@@ -745,51 +772,7 @@
     line-height: 1;
   }
 
-  /* Polaroid on the back of the postcard */
-  .back-letter { position: relative; }
-  .back-polaroid {
-    margin: 18px auto 12px;
-    width: 132px;
-    transform: rotate(-4deg);
-    background: #fdf6e3;
-    padding: 8px 8px 22px 8px;
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.7) inset,
-      0 10px 22px -10px rgba(80, 50, 120, 0.45),
-      0 3px 8px -4px rgba(80, 50, 120, 0.25);
-    border-radius: 2px;
-    position: relative;
-  }
-  .back-polaroid .polaroid-tape {
-    position: absolute;
-    top: -8px; left: 50%;
-    transform: translateX(-50%) rotate(-3deg);
-    width: 48px; height: 14px;
-    background: rgba(220, 200, 235, 0.6);
-    border-left: 1px dashed rgba(90, 70, 130, 0.25);
-    border-right: 1px dashed rgba(90, 70, 130, 0.25);
-  }
-  .back-polaroid .polaroid-photo {
-    width: 112px;
-    height: 112px;
-    background: #efe6d0;
-    background-image:
-      repeating-linear-gradient(135deg,
-        rgba(180,150,200,0.16) 0 6px,
-        rgba(180,150,200,0.05) 6px 12px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-  .back-polaroid .polaroid-caption {
-    margin-top: 6px;
-    text-align: center;
-    font-family: "Caveat", cursive;
-    font-size: 14px;
-    color: var(--ink-soft);
-    line-height: 1;
-  }
+  /* Polaroid on the back — overridden later in pc-back section */
   .bouquet {
     position: relative;
     width: 18%;
@@ -1107,14 +1090,9 @@
   .pc-back {
     position: absolute;
     inset: 0;
-    padding: 56px 44px 32px 44px;
-    display: grid;
-    grid-template-columns: 1.05fr 1fr;
-    grid-template-rows: 1fr auto;
-    grid-template-areas:
-      "letter wishes"
-      "signoff signoff";
-    gap: 14px 36px;
+    padding: 42px 56px 56px 56px;
+    display: flex;
+    flex-direction: column;
     z-index: 5;
   }
   .back-edge {
@@ -1124,149 +1102,373 @@
     border-radius: 6px;
     pointer-events: none;
   }
-  .back-divide {
-    position: absolute;
-    left: 50%;
-    top: 22%;
-    bottom: 22%;
-    width: 1px;
-    background: repeating-linear-gradient(180deg,
-      rgba(122, 90, 50, 0.25) 0 4px,
-      transparent 4px 8px);
-    pointer-events: none;
+
+  /* ── LETTER (hero, single block) ──────────────────────────────── */
+  .back-letter {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    min-width: 0;
   }
-  .back-stamp {
-    grid-area: stamp;
-    justify-self: end;
-    align-self: start;
-    order: 2;
-    width: 58px; height: 70px;
-    border: 1px dashed rgba(122, 90, 50, 0.35);
-    border-radius: 3px;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    color: var(--rose-deep);
-    background: rgba(255,255,255,0.35);
-    padding: 4px;
-  }
-  .back-postmark {
-    grid-area: postmark;
-    align-self: start;
-    justify-self: start;
-    order: 1;
+  .letter-meta {
+    display: flex;
+    align-items: center;
     font-family: "DM Mono", monospace;
     font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--ink-soft);
+    letter-spacing: 0.26em;
     text-transform: uppercase;
-    opacity: .8;
+    color: var(--ink-faint);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed rgba(122, 90, 50, 0.22);
   }
-  .back-letter {
-    grid-area: letter;
-    padding-top: 6px;
-  }
+  .letter-meta .letter-date { letter-spacing: 0.22em; color: var(--ink-soft); }
+  .letter-meta .letter-place { font-style: normal; }
+
   .back-greeting {
     font-family: "Cormorant Garamond", serif;
     font-style: italic;
     font-weight: 500;
-    font-size: clamp(28px, 4vw, 42px);
-    line-height: 1.1;
+    font-size: clamp(28px, 3.4vw, 36px);
+    line-height: 1.0;
     color: var(--ink);
-    margin-bottom: 12px;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.015em;
   }
   .back-greeting em {
     color: var(--rose-deep);
     font-style: italic;
+    font-weight: 600;
   }
-  .back-message {
-    font-family: "Caveat", cursive;
-    font-size: clamp(16px, 1.8vw, 19px);
-    line-height: 1.5;
-    color: var(--ink-soft);
-    margin: 0;
-    max-width: 36ch;
+  .back-letter-rule {
+    width: 48px;
+    height: 1px;
+    background: rgba(122, 90, 50, 0.4);
+    margin: 0 0 12px 0;
   }
 
-  .back-wishes {
-    grid-area: wishes;
-    padding-top: 6px;
-    overflow: hidden;
+  /* The body of the letter — two explicit columns so a long letter fits. */
+  .back-message {
+    font-family: "Caveat", cursive;
+    font-size: clamp(15px, 1.5vw, 17px);
+    line-height: 1.45;
+    color: var(--ink);
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 38px;
+    flex: 0 1 auto;
+    min-height: 0;
   }
-  .back-wishes-title {
+  .msg-col {
+    position: relative;
+    min-width: 0;
+  }
+  .msg-col + .msg-col {
+    border-left: 1px dotted rgba(122, 90, 50, 0.18);
+    padding-left: 38px;
+    margin-left: -38px;
+  }
+  .back-message p {
+    margin: 0 0 20px 0;
+  }
+  .back-message p:last-child { margin-bottom: 0; }
+
+  /* ── Signoff & P.S. ──────────────────────────────────────────── */
+  .back-signoff {
+    margin-top: 14px;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    font-family: "Caveat", cursive;
+    color: var(--ink-soft);
+    padding-top: 0;
+  }
+  .back-from {
+    font-size: 17px;
+    font-style: italic;
+    white-space: nowrap;
+    flex: 0 0 auto;
+    color: var(--ink-soft);
+    letter-spacing: 0.01em;
+  }
+  .back-name {
+    position: relative;
+    font-family: "Allura", cursive;
+    font-size: 44px;
+    color: var(--rose-deep);
+    line-height: 0.85;
+    transform: rotate(-4deg) translateY(4px);
+    letter-spacing: 0.01em;
+    text-shadow:
+      0 1px 0 rgba(255,255,255,0.6),
+      0 2px 3px rgba(184, 30, 80, 0.18);
+    padding-bottom: 4px;
+  }
+  .back-name::after {
+    content: "";
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    bottom: -2px;
+    height: 6px;
+    background:
+      radial-gradient(ellipse 60% 100% at 50% 0%,
+        rgba(225, 131, 158, 0.55) 0%,
+        rgba(225, 131, 158, 0) 70%);
+    transform: rotate(-1deg);
+    pointer-events: none;
+  }
+  .back-ps {
+    margin-top: 24px;
+    padding-top: 14px;
+    border-top: 1px dotted rgba(122, 90, 50, 0.3);
+    font-family: "Caveat", cursive;
+    font-size: 14px;
+    line-height: 1.3;
+    color: var(--ink-soft);
+    max-width: 68ch;
+    font-style: italic;
+    transform: rotate(-0.4deg);
+  }
+
+  /* ── Top-right reveal-wishes button ──────────────────────────── */
+  .reveal-wishes {
+    position: absolute;
+    top: 78px;
+    right: 84px;
+    z-index: 7;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: rgba(255,255,255,0.6);
+    border: 1px dashed rgba(122, 90, 50, 0.4);
+    border-radius: 999px;
+    padding: 6px 13px 6px 11px;
+    cursor: pointer;
+    transition: background .2s ease, border-color .2s ease, transform .2s ease, color .2s ease;
+    font-family: inherit;
+    color: var(--ink);
+    text-align: left;
+    backdrop-filter: blur(2px);
+  }
+  .reveal-wishes:hover {
+    background: var(--pink-blush);
+    border-color: var(--rose-deep);
+    border-style: solid;
+    transform: translateY(-1px);
+    color: var(--rose-deep);
+  }
+  .reveal-wishes .rw-icon {
+    color: var(--rose-deep);
+    font-size: 12px;
+    line-height: 1;
+    transition: transform .25s ease;
+  }
+  .reveal-wishes:hover .rw-icon {
+    transform: rotate(72deg) scale(1.15);
+  }
+  .reveal-wishes .rw-line {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1;
+    color: inherit;
+    white-space: nowrap;
+  }
+  .reveal-wishes .rw-cta {
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    color: var(--rose-deep);
+    line-height: 1;
+    transition: transform .2s ease;
+  }
+  .reveal-wishes:hover .rw-cta {
+    transform: translateX(2px);
+  }
+
+  /* ── Wishes drawer overlay ───────────────────────────────────── */
+  .wishes-drawer {
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .35s ease;
+  }
+  .wishes-drawer.is-open {
+    pointer-events: auto;
+    opacity: 1;
+  }
+  .wd-paper {
+    position: absolute;
+    inset: 0;
+    padding: 30px 44px 30px 44px;
+    background:
+      radial-gradient(140% 90% at 30% 0%, #fff6fa 0%, #fde6ee 35%, #f5e3f2 70%, #ece1f5 100%);
+    border-radius: 12px;
+    overflow: hidden;
+    transform: translateY(28px);
+    transition: transform .5s cubic-bezier(.4, 0, .2, 1);
     display: flex;
     flex-direction: column;
-    gap: 1px;
-    margin-bottom: 8px;
   }
-  .back-wishes-title > span:first-child {
+  .wishes-drawer.is-open .wd-paper { transform: translateY(0); }
+  .wd-paper::before {
+    content: "";
+    position: absolute; inset: 14px;
+    border: 1px solid rgba(122, 90, 50, 0.22);
+    border-radius: 6px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .wd-close {
+    align-self: flex-start;
+    background: rgba(255,255,255,0.65);
+    border: 1px solid rgba(122, 90, 50, 0.32);
+    color: var(--ink);
+    font-family: "DM Mono", monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all .2s ease;
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 2;
+  }
+  .wd-close:hover {
+    background: var(--ink);
+    color: var(--cream);
+    border-color: var(--ink);
+  }
+  .wd-title {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(122, 90, 50, 0.22);
+    position: relative;
+    z-index: 1;
+  }
+  .wd-num {
     font-family: "Cormorant Garamond", serif;
     font-style: italic;
     font-weight: 500;
-    font-size: 22px;
+    font-size: 76px;
+    line-height: 0.85;
+    color: var(--rose-deep);
+    letter-spacing: -0.04em;
+    text-shadow: 0 2px 3px rgba(184, 30, 80, 0.15);
+  }
+  .wd-cap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .wd-cap-script {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 24px;
     color: var(--ink);
     line-height: 1;
   }
-  .back-wishes-title .reasons {
+  .wd-cap-tag {
     font-family: "DM Mono", monospace;
     font-size: 9px;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--ink-faint);
   }
-  .wish-list {
+  .wd-list {
     list-style: none;
     margin: 0; padding: 0;
-    columns: 2;
-    column-gap: 14px;
-    font-family: "Caveat", cursive;
+    columns: 3;
+    column-gap: 32px;
+    column-rule: 1px dotted rgba(122, 90, 50, 0.18);
+    font-family: "Cormorant Garamond", serif;
     color: var(--ink-soft);
-  }
-  .wish-list li {
+    flex: 1 1 auto;
     position: relative;
-    padding-left: 22px;
-    font-size: 13.5px;
-    line-height: 1.25;
-    margin-bottom: 5px;
+    z-index: 1;
+    min-height: 0;
+  }
+  .wd-list li {
+    position: relative;
+    padding: 0 0 0 28px;
+    font-size: 15px;
+    font-style: italic;
+    line-height: 1.4;
+    margin: 0 0 11px 0;
     break-inside: avoid;
     opacity: 0;
     transform: translateY(4px);
+  }
+  .wishes-drawer.is-open .wd-list li {
     animation: wishIn .6s ease forwards;
   }
   @keyframes wishIn {
     to { opacity: 1; transform: translateY(0); }
   }
-  .wish-n {
+  .wd-n {
     position: absolute;
     left: 0;
-    top: 2px;
+    top: 4px;
+    font-family: "DM Mono", monospace;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 9.5px;
+    color: var(--rose-deep);
+    line-height: 1;
+    width: 24px;
+    text-align: right;
+    padding-right: 4px;
+    letter-spacing: 0.05em;
+    opacity: 0.9;
+  }
+  .wd-t {
+    display: block;
+    color: var(--ink);
+    opacity: 0.85;
+  }
+  .wd-list li:hover .wd-t {
+    opacity: 1;
+    color: var(--rose-deep);
+  }
+  .wd-foot {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dotted rgba(122, 90, 50, 0.25);
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+  .wd-seal {
+    display: inline-block;
     font-family: "DM Mono", monospace;
     font-size: 8.5px;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
     color: var(--rose-deep);
-    line-height: 1.3;
+    padding: 6px 12px;
+    border: 1px solid rgba(184, 30, 80, 0.4);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.5);
+    transform: rotate(-2deg);
   }
-  .wish-t {
-    display: block;
-  }
-
-  .back-signoff {
-    grid-area: signoff;
-    align-self: end;
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    font-family: "Caveat", cursive;
-    color: var(--ink-soft);
-    padding-top: 8px;
-    border-top: 1px solid rgba(122, 90, 50, 0.18);
-    margin-top: 4px;
-  }
-  .back-from { font-size: 18px; }
-  .back-name { font-size: 22px; color: var(--rose-deep); transform: rotate(-2deg); }
 
   .back-replay {
     position: absolute;
-    bottom: 26px; right: 36px;
+    bottom: 28px; right: 36px;
     background: transparent;
     border: 1px solid rgba(122, 90, 50, 0.4);
     color: var(--ink);
@@ -1382,6 +1584,9 @@
   .env-note {
     font-family: "Caveat", cursive;
     font-size: 18px;
+    white-space: nowrap;
+    max-width: 100%;
+    padding: 0 8px;
     color: var(--rose-deep);
     margin-top: 8px;
     animation: nudge 2s ease-in-out infinite;
@@ -1454,13 +1659,17 @@
     border-radius: 50%;
   }
   .seal-letter {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -54%);
     font-family: "Allura", cursive;
     font-size: 42px;
     color: #fbe3e3;
     line-height: 1;
-    transform: translateX(28%);
     text-shadow: 0 1px 1px rgba(0,0,0,0.4);
-    z-index: 2;
+    z-index: 4;
+    pointer-events: none;
   }
   .seal-shine {
     position: absolute;
@@ -1479,6 +1688,11 @@
   .is-cracked .seal-right {
     transform: translateX(30%) rotate(22deg);
     opacity: 0;
+  }
+  .is-cracked .seal-letter {
+    opacity: 0;
+    transform: translate(-50%, -54%) scale(0.6);
+    transition: opacity .6s ease, transform .8s cubic-bezier(.5, 0, .3, 1);
   }
 
   /* Subtle shimmer on envelope while waiting */
@@ -1503,7 +1717,8 @@
   .song-btn {
     position: absolute;
     bottom: 30px;
-    right: 180px;
+    left: 36px;
+    right: auto;
     display: inline-flex;
     align-items: center;
     gap: 9px;
@@ -1567,10 +1782,10 @@
     50%      { transform: scaleY(1); }
   }
 
-  /* Karaoke overlay — fixed at the very top of the postcard back */
+  /* Karaoke overlay — fixed near the top of the postcard back */
   .song-stage {
     position: absolute;
-    top: 16px;
+    top: 24px;
     left: 0; right: 0;
     z-index: 9;
     text-align: center;

@@ -8,39 +8,42 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "envelopeNote": "press the seal",
   "sealLetter": "R",
   "frostingName": "Renata",
-  "fromName": "happy birthday,",
-  "signature": "— Maksym",
-  "message": "Twenty-five candles. Twenty-five roses. And twenty-five small things I appreciate about you — one for every year I've been lucky enough to notice them.",
+  "fromName": "Best,",
+  "signature": "Maksym",
+  "letterDate": "19 May 2026 · on your 25th",
+  "message": "— Renata\n\nToday is all about celebrating one of the most beautiful people I know — inside and out. Turning 25 is a huge milestone, and you should be incredibly proud of who you are and everything you've built so far. You have this rare ability to bring positive energy into any room, and your drive and focus are genuinely inspiring to be around.\n\nI'm really grateful that our paths crossed. Thank you for teaching me how to take good pictures, for making me start using sunscreen, and for your support along the way. It's been almost a year since I got to know you, and in that time I've only discovered more and more of the great things that make you who you are. You are easily one of the most genuine people I know.\n\nEven though it's been a while since we've seen each other, I still carry the warmth of our conversations, and the memories we have shared hold a special place among my best ones.\n\nI want to wish you the absolute best of luck with everything ahead of you. I wish you strong health, the fulfillment of your boldest wishes, and a path always filled with sincere and kind people. Stay as genuine, joyful, original, and unique as you are — it comes so naturally to you. Most importantly, I wish for you to be truly happy. I hope your vision boards get even more ambitious, because you truly have the talent and determination to make them real. You deserve the very best that life has to offer.",
+  "ps": "P.S. — Looking forward to giving you your present in person.",
+  "polaroidCaptions": ["you — last summer", "the two of us"],
   "age": 25,
   "candleColors": "pink-lilac-blue",
   "showHints": true,
   "playSong": true,
   "wishes": [
-    "the way you laugh — especially at bad jokes",
+    "the way you laugh — especially at my bad jokes",
     "how you light up a room",
-    "your taste in basically everything",
     "how brave you actually are",
     "how you remember every little thing",
     "your patience",
-    "your stubbornness (admirable, really)",
+    "your understanding",
+    "your support",
     "your softness",
-    "how you stand your ground",
+    "how you stand your ground (admirable, really)",
     "how generous you are with your time",
     "the way you celebrate other people",
     "your eye for beauty",
     "how easy you are to talk to",
     "the way you take care of people",
-    "your handwriting",
+    "your reels in the morning",
     "how curious you are about everything",
     "your honesty",
     "the way you keep your promises",
-    "your unreasonable standards (we benefit)",
-    "how you make boring things fun",
-    "the playlists you make",
-    "the books you recommend",
-    "your soft spot for red roses",
-    "year twenty-five looks gorgeous on you",
-    "whatever twenty-six brings — bring it on"
+    "the way you speak Ukrainian",
+    "your charming smile",
+    "your drive for life",
+    "your competitiveness",
+    "how you taught me to take pictures",
+    "how you photograph food before eating it",
+    "how hardworking you are"
   ]
 }/*EDITMODE-END*/;
 
@@ -102,10 +105,9 @@ function Envelope({ name, note, sealLetter, opened, onOpen }) {
           aria-label="Open the postcard"
           onClick={handleClick}
         >
-          <span className="seal-half seal-left" aria-hidden="true">
-            <span className="seal-letter">{sealLetter}</span>
-          </span>
+          <span className="seal-half seal-left" aria-hidden="true" />
           <span className="seal-half seal-right" aria-hidden="true" />
+          <span className="seal-letter" aria-hidden="true">{sealLetter}</span>
           <span className="seal-shine" aria-hidden="true" />
         </button>
       </div>
@@ -331,7 +333,7 @@ function MakeAWish({ phase, name, onSubmit }) {
             </div>
             <div className="wish-receipt-line" />
             <p className="wish-receipt-ref">
-              REF · {refRef.current} · {new Date().toLocaleDateString(undefined, { month: "short", day: "2-digit", year: "numeric" })}
+              REF · {refRef.current} · 19 May 2026
             </p>
           </div>
         )}
@@ -377,60 +379,112 @@ function Confetti({ active }) {
   );
 }
 
-// ── Postcard back (the message + 25 wishes list) ────────────────────────────
+// ── Postcard back (the long letter; wishes hidden behind a reveal) ──────────
 function PostcardBack({ tweaks, songKey, onReplay }) {
   const wishes = tweaks.wishes || [];
+  const paragraphs = (tweaks.message || "").split(/\n+/).filter(Boolean);
+  // Balance columns by accumulated character length, not paragraph count,
+  // so the visible left/right halves are roughly equal in height.
+  const totalChars = paragraphs.reduce((s, p) => s + p.length, 0);
+  let split = paragraphs.length;
+  let acc = 0;
+  for (let i = 0; i < paragraphs.length; i++) {
+    acc += paragraphs[i].length;
+    if (acc >= totalChars / 2) { split = i + 1; break; }
+  }
+  const col1Paras = paragraphs.slice(0, split);
+  const col2Paras = paragraphs.slice(split);
+  const [wishesOpen, setWishesOpen] = useState(false);
+
   return (
     <div className="pc-back">
       <div className="back-edge" aria-hidden="true" />
-      <div className="back-divide" aria-hidden="true" />
 
       {window.HappyBirthdaySong && (
         <window.HappyBirthdaySong name={tweaks.recipientName} playKey={songKey} />
       )}
 
+      {/* ── THE LETTER (hero) ────────────────────────────────────── */}
       <div className="back-letter">
-        <div className="back-greeting">
-          Happy Birthday, <em>{tweaks.recipientName}</em>
+        <div className="letter-meta">
+          <span className="letter-date">{tweaks.letterDate}</span>
         </div>
-        <p className="back-message">{tweaks.message}</p>
 
-        {/* Polaroid tucked into the letter side */}
-        <div className="back-polaroid" aria-label="Photo of the birthday person">
-          <div className="polaroid-tape" />
-          <div className="polaroid-photo">
-            <image-slot
-              id="renata-photo"
-              shape="rect"
-              fit="cover"
-              placeholder="drop her photo →"
-              style={{ width: "100%", height: "100%" }}
-            />
+        <h2 className="back-greeting">
+          Happy Birthday,&nbsp;<em>{tweaks.recipientName}</em>
+        </h2>
+        <div className="back-letter-rule" aria-hidden="true" />
+
+        <div className="back-message">
+          <div className="msg-col">
+            {col1Paras.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
           </div>
-          <div className="polaroid-caption">
-            {tweaks.recipientName} · {new Date().getFullYear()}
+          <div className="msg-col">
+            {col2Paras.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+            <div className="back-signoff">
+              <span className="back-from">{tweaks.fromName}</span>
+              <span className="back-name">{tweaks.signature}</span>
+            </div>
           </div>
         </div>
+
+        {tweaks.ps && (
+          <div className="back-ps">{tweaks.ps}</div>
+        )}
       </div>
 
-      <div className="back-wishes">
-        <div className="back-wishes-title">
-          <span>twenty-five</span>
-          <span className="reasons">small things I appreciate about you</span>
-        </div>
-        <ol className="wish-list">
-          {wishes.map((w, i) => (
-            <li key={i} style={{ animationDelay: `${250 + i * 60}ms` }}>
-              <span className="wish-n">{String(i + 1).padStart(2, "0")}</span>
-              <span className="wish-t">{w}</span>
-            </li>
-          ))}
-        </ol>
-      </div>
+      {/* Top-right reveal button — opens the 25-wishes drawer */}
+      <button
+        type="button"
+        className="reveal-wishes"
+        onClick={() => setWishesOpen(true)}
+        aria-label="Open twenty-five amazing things about you"
+      >
+        <span className="rw-icon" aria-hidden="true">✦</span>
+        <span className="rw-line">25 amazing things about you</span>
+        <span className="rw-cta" aria-hidden="true">→</span>
+      </button>
 
-      <div className="back-signoff">
-        <span className="back-from">{tweaks.fromName}</span>
-        <span className="back-name">{tweaks.signature}</span>
+      {/* ── WISHES DRAWER (overlay, hidden by default) ──────────── */}
+      <div className={"wishes-drawer" + (wishesOpen ? " is-open" : "")} aria-hidden={!wishesOpen}>
+        <div className="wd-paper">
+          <button
+            type="button"
+            className="wd-close"
+            onClick={() => setWishesOpen(false)}
+            aria-label="Back to the letter"
+          >
+            ← back to letter
+          </button>
+
+          <div className="wd-title">
+            <span className="wd-num">25</span>
+            <span className="wd-cap">
+              <span className="wd-cap-script">amazing things</span>
+              <span className="wd-cap-tag">about you — one for every year</span>
+            </span>
+          </div>
+
+          <ol className="wd-list">
+            {wishes.map((w, i) => (
+              <li
+                key={i}
+                style={wishesOpen ? { animationDelay: `${120 + i * 40}ms` } : undefined}
+              >
+                <span className="wd-n">{String(i + 1).padStart(2, "0")}</span>
+                <span className="wd-t">{w}</span>
+              </li>
+            ))}
+          </ol>
+
+          <div className="wd-foot">
+            <span className="wd-seal">posted with care</span>
+          </div>
+        </div>
       </div>
 
       <button className="back-replay" onClick={onReplay}>Relight everything</button>
@@ -533,7 +587,7 @@ function App() {
 
             <div className="pc-header">
               <div className="pc-eyebrow">
-                A Postcard<span className="dot" />For You
+                A Postcard<span className="dot" />For {tweaks.recipientName}
               </div>
               <div className="pc-title">A little something — with a wish inside.</div>
             </div>
@@ -546,6 +600,11 @@ function App() {
             <div className="scene">
               <div className="cake-wrap">
                 <div className="plate" />
+                <div className="cake-label" aria-label="Cake variety">
+                  <span className="cake-label-tick">—</span>
+                  <span className="cake-label-text">tres leches cake</span>
+                  <span className="cake-label-tick">—</span>
+                </div>
                 <div className="tier bottom"><div className="dots" /></div>
                 <div className="tier middle">
                   <div className="frosting-name">{tweaks.frostingName}</div>
@@ -579,7 +638,7 @@ function App() {
 
             <div className="postmark">
               <div className="seal">Handmade · 1 of 1</div>
-              <div>Posted from the heart · {new Date().toLocaleDateString(undefined, { month: "short", day: "2-digit", year: "numeric" })}</div>
+              <div>Posted from the heart · 19 May 2026</div>
             </div>
 
             <Confetti active={allLit && !flipped} />
